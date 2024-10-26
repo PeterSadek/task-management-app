@@ -5,6 +5,10 @@ const initialState = {
   loading: false,
   error: null,
   status: "All",
+  filter: {
+    state: "",
+    priority: "",
+  },
 };
 
 // Fetch data from api
@@ -40,6 +44,9 @@ const taskSlice = createSlice({
     deleteTask: (state, action) => {
       state.tasks = state.tasks.filter((task) => task.id !== action.payload);
     },
+    setFilter: (state, action) => {
+      state.filter = { ...state.filter, ...action.payload };
+    },
   },
   // extrareducers for handling fetched data
   extraReducers: (builder) => {
@@ -58,5 +65,5 @@ const taskSlice = createSlice({
       });
   },
 });
-export const { addTask, editTask, deleteTask } = taskSlice.actions;
+export const { addTask, editTask, deleteTask, setFilter } = taskSlice.actions;
 export default taskSlice.reducer;

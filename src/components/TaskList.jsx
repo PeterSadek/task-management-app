@@ -1,37 +1,73 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteTask, fetchTodo } from "../features/taskSlice";
+import { deleteTask, fetchTodo, setFilter } from "../features/taskSlice";
 import placeholder from "../assets/placeholder.png";
 import EditTask from "./EditTask";
 
 const TaskList = () => {
+  const dispatch = useDispatch();
   const tasks = useSelector((state) => state.tasks.tasks);
   const loading = useSelector((state) => state.tasks.loading);
   const error = useSelector((state) => state.tasks.error);
-  const dispatch = useDispatch();
+  const filter = useSelector((state) => state.tasks.filter);
 
   useEffect(() => {
     dispatch(fetchTodo());
   }, [dispatch]);
+
+  const handleDelete = (id) => {
+    dispatch(deleteTask(id));
+  };
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    dispatch(setFilter({ [name]: value }));
+  };
+
+  const filteredTasks = tasks.filter((task) => {
+    const stateMatch = filter.state ? task.state === filter.state : true;
+    const priorityMatch = filter.priority
+      ? task.priority === filter.priority
+      : true;
+    return stateMatch && priorityMatch;
+  });
 
   if (loading) {
     return <p>Loading tasks...</p>;
   }
 
   if (error) {
-    return <p>Error while loading tasks.{error}</p>;
+    return <p>Error while loading tasks: {error}</p>;
   }
-
-  const handleDelete = (id) => {
-    dispatch(deleteTask(id));
-  };
 
   return (
     <div>
       <div>
         <h2>Tasks</h2>
+        <div className="flex space-x-4 mb-4">
+          <select
+            name="state"
+            onChange={handleFilterChange}
+            className="border rounded-md p-2"
+          >
+            <option value="">All States</option>
+            <option value="todo">Todo</option>
+            <option value="doing">Doing</option>
+            <option value="done">Done</option>
+          </select>
+          <select
+            name="priority"
+            onChange={handleFilterChange}
+            className="border rounded-md p-2"
+          >
+            <option value="">All Priorities</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
         <ul className="space-y-4">
-          {tasks.map((task) => (
+          {filteredTasks.map((task) => (
             <li
               key={task.id}
               className="bg-grey-50 p-4 rounded-md shadow-sm flex justify-between items-center flex-wrap"
@@ -46,7 +82,7 @@ const TaskList = () => {
                       style={{ objectFit: "cover" }}
                     />
                   ) : (
-                    <img src={placeholder} width="48" />
+                    <img src={placeholder} width="48" alt="placeholder" />
                   )}
                   <h3 className="text-lg font-medium text-gray-800">
                     {task.title}
