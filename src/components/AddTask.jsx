@@ -4,6 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { v4 as uuid4 } from "uuid";
 import { useDispatch } from "react-redux";
 import { addTask } from "../features/taskSlice";
+import placeholder from "../assets/placeholder.png"; // Make sure to import the placeholder image
 
 const AddTask = () => {
   const dispatch = useDispatch();
@@ -32,7 +33,12 @@ const AddTask = () => {
   });
 
   const onSubmit = (data) => {
-    const imageUrl = URL.createObjectURL(data.image[0]);
+    let imageUrl = placeholder;
+
+    if (data.image && data.image.length > 0) {
+      imageUrl = URL.createObjectURL(data.image[0]);
+    }
+
     const taskData = { ...data, image: imageUrl };
     dispatch(addTask({ id: uuid4(), ...taskData }));
     reset();
@@ -50,7 +56,7 @@ const AddTask = () => {
           type="text"
           placeholder="Task title"
         />
-        <p className="text-red-700">{errors.name?.message}</p>
+        <p className="text-red-700">{errors.title?.message}</p>
       </div>
       <div className="mb-4">
         <textarea
