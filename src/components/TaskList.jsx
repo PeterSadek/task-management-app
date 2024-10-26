@@ -24,17 +24,30 @@ const TaskList = () => {
     <div>
       <div>
         <h2>Tasks</h2>
-        <ul>
+        <ul className="space-y-4">
           {tasks.map((task) => (
-            <li key={task.id}>
+            <li
+              key={task.id}
+              className="bg-grey-50 p-4 rounded-md shadow-sm flex justify-between items-center"
+            >
               <div>
-                <p>{task.title}</p>
-                {task.description && <p>{task.description}</p>}
-                <p>State: {task.state}</p>
+                <h3 className="text-lg font-medium text-gray-800">
+                  {task.title}
+                </h3>
+                {task.description && (
+                  <p className="text-gray-600">{task.description}</p>
+                )}
+                <p className="mt-1 text-sm font-semibold">
+                  State: <span className="italic underline">{task.state}</span>
+                </p>
               </div>
-              <div>
-                <button>Edit</button>
-                <button>Delete</button>
+              <div className="flex space-x-2">
+                <button className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                  Edit
+                </button>
+                <button className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600">
+                  Delete
+                </button>
               </div>
             </li>
           ))}
