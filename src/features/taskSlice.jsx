@@ -37,6 +37,9 @@ const taskSlice = createSlice({
         task.id === action.payload.id ? action.payload : task
       );
     },
+    deleteTask: (state, action) => {
+      state.tasks = state.tasks.filter((task) => task.id !== action.payload);
+    },
   },
   // extrareducers for handling fetched data
   extraReducers: (builder) => {
@@ -55,5 +58,5 @@ const taskSlice = createSlice({
       });
   },
 });
-export const { addTask, editTask } = taskSlice.actions;
+export const { addTask, editTask, deleteTask } = taskSlice.actions;
 export default taskSlice.reducer;
