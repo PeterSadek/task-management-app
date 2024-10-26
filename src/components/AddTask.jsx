@@ -1,10 +1,15 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { v4 as uuid4 } from "uuid";
+import { useDispatch } from "react-redux";
+import { addTask } from "../features/taskSlice";
 
 const AddTask = () => {
+  const dispatch = useDispatch();
+
   const schema = yup.object().shape({
-    name: yup.string().min(4).max(20).required("Name is required"),
+    title: yup.string().min(4).max(20).required("Name is required"),
     description: yup.string().min(8).max(50).optional(),
     priority: yup
       .string()
@@ -26,24 +31,26 @@ const AddTask = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmitHandler = (data) => {
-    console.log({ data });
+  const onSubmit = (data) => {
+    const imageUrl = URL.createObjectURL(data.image[0]);
+    const taskData = { ...data, image: imageUrl };
+    dispatch(addTask({ id: uuid4(), ...taskData }));
     reset();
   };
 
   return (
-    <form className="mb-6" onSubmit={handleSubmit(onSubmitHandler)}>
+    <form className="mb-6" onSubmit={handleSubmit(onSubmit)}>
       <h2 className="text-xl font-semibold mb-3 text-indigo-500">
         Add new task
       </h2>
       <div className="mb-4">
         <input
-          {...register("name")}
+          {...register("title")}
           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2"
           type="text"
-          placeholder="Task name"
+          placeholder="Task title"
         />
-        <p>{errors.name?.message}</p>
+        <p className="text-red-700">{errors.name?.message}</p>
       </div>
       <div className="mb-4">
         <textarea
@@ -52,7 +59,7 @@ const AddTask = () => {
           placeholder="Task description"
           rows="3"
         ></textarea>
-        <p>{errors.description?.message}</p>
+        <p className="text-red-700">{errors.description?.message}</p>
       </div>
       <div className="mb-4">
         <label className="px-3 py-2" htmlFor="image">
@@ -65,7 +72,7 @@ const AddTask = () => {
           accept="image/*"
           className="px-3 py-2 border rounded-md"
         />
-        <p>{errors.image?.message}</p>
+        <p className="text-red-700">{errors.image?.message}</p>
       </div>
       <div className="mb-4">
         <select
@@ -77,6 +84,7 @@ const AddTask = () => {
           <option value="doing">doing</option>
           <option value="done">done</option>
         </select>
+        <p className="text-red-700">{errors.state?.message}</p>
       </div>
       <div className="mb-4">
         <select
@@ -88,6 +96,7 @@ const AddTask = () => {
           <option value="Medium">Medium</option>
           <option value="High">High</option>
         </select>
+        <p className="text-red-700">{errors.priority?.message}</p>
       </div>
       <button
         type="submit"

@@ -33,13 +33,16 @@ const TaskList = () => {
             >
               <div>
                 <div className="flex items-center">
-                  <img
-                    src={
-                      task.image ? URL.createObjectURL(task.image) : placeholder
-                    }
-                    alt="Task image"
-                    width="48"
-                  />
+                  {task.image ? (
+                    <img
+                      src={task.image}
+                      alt={task.title}
+                      width="48"
+                      style={{ objectFit: "cover" }}
+                    />
+                  ) : (
+                    <img src={placeholder} width="48" />
+                  )}
                   <h3 className="text-lg font-medium text-gray-800">
                     {task.title}
                   </h3>

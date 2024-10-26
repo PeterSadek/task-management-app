@@ -10,7 +10,7 @@ const initialState = {
 // Fetch data from api
 export const fetchTodo = createAsyncThunk("tasks/fetchTodo", async () => {
   const response = await fetch(
-    "https://jsonplaceholder.typicode.com/todos?_limit=5"
+    "https://jsonplaceholder.typicode.com/todos?_limit=4"
   );
   const data = await response.json();
 
@@ -28,7 +28,11 @@ export const fetchTodo = createAsyncThunk("tasks/fetchTodo", async () => {
 const taskSlice = createSlice({
   name: "tasks",
   initialState,
-  reducers: {},
+  reducers: {
+    addTask: (state, action) => {
+      state.tasks.push(action.payload);
+    },
+  },
   // extrareducers for handling fetched data
   extraReducers: (builder) => {
     builder
@@ -46,5 +50,5 @@ const taskSlice = createSlice({
       });
   },
 });
-
+export const { addTask } = taskSlice.actions;
 export default taskSlice.reducer;
