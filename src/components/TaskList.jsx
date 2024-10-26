@@ -29,12 +29,14 @@ const TaskList = () => {
           {tasks.map((task) => (
             <li
               key={task.id}
-              className="bg-grey-50 p-4 rounded-md shadow-sm flex justify-between items-center"
+              className="bg-grey-50 p-4 rounded-md shadow-sm flex justify-between items-center flex-wrap"
             >
               <div>
                 <div className="flex items-center">
                   <img
-                    src={task.image ? task.image : placeholder}
+                    src={
+                      task.image ? URL.createObjectURL(task.image) : placeholder
+                    }
                     alt="Task image"
                     width="48"
                   />
@@ -55,7 +57,7 @@ const TaskList = () => {
                   </span>
                 </p>
               </div>
-              <div className="flex space-x-2">
+              <div className="flex space-x-2 mt-2">
                 <button className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600">
                   Edit
                 </button>
