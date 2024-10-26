@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteTask, fetchTodo, setFilter } from "../features/taskSlice";
 import placeholder from "../assets/placeholder.png";
@@ -10,6 +10,7 @@ const TaskList = () => {
   const loading = useSelector((state) => state.tasks.loading);
   const error = useSelector((state) => state.tasks.error);
   const filter = useSelector((state) => state.tasks.filter);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     dispatch(fetchTodo());
@@ -29,7 +30,10 @@ const TaskList = () => {
     const priorityMatch = filter.priority
       ? task.priority === filter.priority
       : true;
-    return stateMatch && priorityMatch;
+    const searchMatch = task.title
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    return stateMatch && priorityMatch && searchMatch;
   });
 
   if (loading) {
@@ -43,14 +47,21 @@ const TaskList = () => {
   return (
     <div>
       <div>
-        <h2>Tasks</h2>
+        <h2 className="text-2xl text-indigo-600">Tasks</h2>
         <div className="flex space-x-4 mb-4">
+          <input
+            type="text"
+            placeholder="Search by task name"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="border rounded-md p-2"
+          />
           <select
             name="state"
             onChange={handleFilterChange}
             className="border rounded-md p-2"
           >
-            <option value="">All States</option>
+            <option value="">All states</option>
             <option value="todo">Todo</option>
             <option value="doing">Doing</option>
             <option value="done">Done</option>
@@ -60,7 +71,7 @@ const TaskList = () => {
             onChange={handleFilterChange}
             className="border rounded-md p-2"
           >
-            <option value="">All Priorities</option>
+            <option value="">All priorities</option>
             <option value="Low">Low</option>
             <option value="Medium">Medium</option>
             <option value="High">High</option>
