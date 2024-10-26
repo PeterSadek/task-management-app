@@ -21,3 +21,25 @@ const fetchTodo = createAsyncThunk("tasks/fetchTodo", async () => {
     state: task.completed ? "done" : "todo",
   }));
 });
+
+//Create a slice
+const taskSlice = createSlice({
+  name: "tasks",
+  initialState,
+  reducers: {},
+  // extrareducers for handling fetched data
+  extraReducers: (builder) => {
+    builder.addCase(fetchTodo.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(fetchTodo.fulfilled, (state, action) => {
+      state.loading = false;
+      state.tasks = action.payload;
+    });
+    builder.addCase(fetchTodo.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
+  },
+});
