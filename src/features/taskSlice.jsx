@@ -19,6 +19,8 @@ export const fetchTodo = createAsyncThunk("tasks/fetchTodo", async () => {
     title: task.title,
     description: "",
     state: task.completed ? "done" : "todo",
+    priority: task.priority,
+    image: task.image,
   }));
 });
 
